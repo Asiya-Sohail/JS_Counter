@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter</title>
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #2c003e 0%, #7a003c 100%);
+            background-size: fill;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: block;
+            text-align: center;
+            border: 2px solid rgb(201, 154, 154);
+            box-shadow: rgba(201, 154, 154, 0.4);
+            padding: 20px;
+        }
+
+        h2 {
+            color: rgb(201, 154, 154);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #f0e7db;
+            margin-bottom: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        input {
+            width: 120px;
+            padding: 12px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid #7a003c;
+            text-align: center;
+            background-color: #4a0d29;
+            color: rgb(201, 154, 154);
+            margin-bottom: 20px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        input:disabled {
+            opacity: 0.7;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            border: none;
+            color: #f0e7db;
+            background-color: #7a003c;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        button:disabled {
+            background-color: #4a0d29;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #5a002b;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+      <h1>Hello!</h1>
+      <div>
+        <input type='number' value="60" id="input" disabled/>
+      </div>
+      <h2 id="display">5 seconds</h2>
+      <button id="start" onclick=start_button()>Start</button>
+      <button id="stop" onclick=stop_button()>Stop</button>
+      <button id="reset" onclick=reset_button()>Reset</button>
+    </div>
+
+    <script>
+        let counter = 5;
+        let intervalId = null;
+        let isrunning = false;
+        const display = document.getElementById("display");
+        const cinput = document.getElementById("input");
+        const start = document.getElementById("start");
+        const stop = document.getElementById("stop");
+        const reset = document.getElementById("reset");
+
+        function updateCounterdisplay(){
+            cinput.value = counter;
+            display.textContent = `${counter} seconds.`;
+        }
+
+        function updateButtonStates() {
+            start.disabled = isrunning;
+            stop.disabled = !isrunning;
+        }
+
+        function start_button(){
+            if (!isrunning) {
+                isrunning = true;
+                updateButtonStates();  // Update button states based on `isrunning`
+                if (intervalId === null) {
+                    intervalId = setInterval(() => {
+                        if (counter > 0) {
+                            counter--;
+                        } else {
+                            counter = 0;
+                            clearInterval(intervalId);
+                            intervalId = null;
+                            isrunning = false;
+                            updateButtonStates();
+                        }
+                        updateCounterdisplay();
+                    }, 1000);
+                }
+            }
+        }
+
+        function stop_button(){
+            if (isrunning) {
+                isrunning = false;
+                updateButtonStates();  // Update button states based on `isrunning`
+                if (intervalId !== null) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+            }
+        }
+
+        function reset_button(){
+            counter = 5;
+            updateCounterdisplay();
+            if(intervalId!=null){
+                clearInterval(intervalId);
+                intervalId=null;
+            }
+            isrunning = false;
+            updateButtonStates();  // Update button states based on `isrunning`
+        }
+        updateCounterdisplay();
+    </script>
+</body>
+</html>
